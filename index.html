@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitácora Digital Pensamiento de Diseño II</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Hoja de Estilos Personalizada -->
+    <link rel="stylesheet" href="/estilos.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            pinkLight: '#FFCEC7',
+                            magenta: '#F034BF',
+                            blueSky: '#93B5FF',
+                            limeLight: '#F0FFC7',
+                            yellowAccent: '#FDE403',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Space Grotesk"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- Navegación Superior Estilo PillNav (Sin menú lateral) -->
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b-2 border-brand-magenta shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-brand-magenta flex items-center justify-center text-white font-display font-bold text-xl shadow-md">
+                    DII
+                </div>
+                <div>
+                    <h1 class="font-display font-extrabold text-brand-magenta dark:text-brand-pinkLight text-base sm:text-lg leading-tight">Bitácora Digital</h1>
+                    <span class="text-xs text-slate-600 dark:text-brand-blueSky font-semibold tracking-wider uppercase">Pensamiento de Diseño II</span>
+                </div>
+            </div>
+
+            <!-- Menú de Pestañas PillNav -->
+            <nav class="hidden md:flex items-center bg-slate-100 dark:bg-slate-800 p-1.5 rounded-full border border-slate-200 dark:border-slate-700 shadow-inner">
+                <button onclick="switchTab('introduccion')" class="pill-nav-btn active px-4 py-2 rounded-full text-xs font-bold transition-all duration-300" data-tab="introduccion">1. Introducción</button>
+                <button onclick="switchTab('glosario')" class="pill-nav-btn px-4 py-2 rounded-full text-xs font-bold transition-all duration-300" data-tab="glosario">2. Conceptos & Leyes</button>
+                <button onclick="switchTab('taller')" class="pill-nav-btn px-4 py-2 rounded-full text-xs font-bold transition-all duration-300" data-tab="taller">3. Taller Retículas</button>
+                <button onclick="switchTab('campus')" class="pill-nav-btn px-4 py-2 rounded-full text-xs font-bold transition-all duration-300" data-tab="campus">4. Campus Diseño</button>
+                <button onclick="switchTab('artefactos')" class="pill-nav-btn px-4 py-2 rounded-full text-xs font-bold transition-all duration-300" data-tab="artefactos">5. Artefactos</button>
+            </nav>
+
+            <!-- Buscador y Switch Modo Claro/Oscuro -->
+            <div class="flex items-center space-x-4">
+                <div class="relative max-w-xs hidden sm:block">
+                    <input type="text" id="globalSearch" onkeyup="searchGlobal()" 
+                        placeholder="Buscar concepto o análisis..." 
+                        class="w-full pl-8 pr-3 py-1.5 bg-slate-100 dark:bg-slate-800 border-2 border-brand-blueSky rounded-full text-xs font-medium focus:outline-none focus:border-brand-magenta">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                </div>
+
+                <label class="switch scale-90">
+                    <input type="checkbox" id="input" onchange="toggleDarkMode()">
+                    <span class="slider round">
+                        <span class="sun-moon">
+                            <span class="moon-dot" id="moon-dot-1"></span>
+                            <span class="moon-dot" id="moon-dot-2"></span>
+                            <span class="moon-dot" id="moon-dot-3"></span>
+                        </span>
+                        <span class="stars">
+                            <svg class="star" id="star-1" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+                        </span>
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Menú móvil horizontal integrado bajo la barra principal -->
+        <div class="md:hidden flex overflow-x-auto py-2 px-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 gap-2">
+            <button onclick="switchTab('introduccion')" class="pill-nav-btn active whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold" data-tab="introduccion">1. Intro</button>
+            <button onclick="switchTab('glosario')" class="pill-nav-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold" data-tab="glosario">2. Conceptos</button>
+            <button onclick="switchTab('taller')" class="pill-nav-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold" data-tab="taller">3. Taller</button>
+            <button onclick="switchTab('campus')" class="pill-nav-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold" data-tab="campus">4. Campus</button>
+            <button onclick="switchTab('artefactos')" class="pill-nav-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold" data-tab="artefactos">5. Artefactos</button>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL DE SECCIONES -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+       <!-- APARTADO 1: INTRODUCCIÓN CON FONDO PIXEL SWAP -->
+        <section id="tab-introduccion" class="tab-content">
+            <div class="hero-bg-container relative p-8 sm:p-12 rounded-3xl border-4 border-brand-pinkLight shadow-2xl overflow-hidden text-center min-h-[500px] flex flex-col justify-center items-center bg-slate-900">
+                
+                <!-- Canvas para el efecto de píxeles interactivos -->
+                <canvas id="pixelCanvas" class="absolute inset-0 w-full h-full object-cover opacity-60 z-0 pointer-events-none"></canvas>
+
+                <div class="relative z-10 w-full max-w-4xl mx-auto">
+                    <span class="font-display tracking-widest text-brand-magenta font-bold uppercase text-xs block mb-2">Bitácora Digital</span>
+                    <h1 class="font-display text-3xl sm:text-5xl font-extrabold text-white mb-6">
+                        Pensamiento de Diseño II
+                    </h1>
+
+                    <!-- Componente Card PixelSwap -->
+                    <div class="pixel-swap-card cursor-pointer group my-6 p-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border-2 border-brand-magenta shadow-lg transition-all duration-500" onclick="togglePixelCard(this)">
+                        <div class="card-front transition-opacity duration-300">
+                            <i class="fa-solid fa-wand-magic-sparkles text-brand-magenta text-3xl mb-2 animate-bounce"></i>
+                            <p class="font-bold text-slate-800 dark:text-slate-100 text-sm">Haz clic o pasa el cursor para revelar la información del equipo de investigación</p>
+                        </div>
+
+                        <div class="card-back hidden transition-opacity duration-300">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+                                <div class="p-4 bg-brand-pinkLight/30 dark:bg-slate-800 rounded-xl border border-brand-magenta">
+                                    <h4 class="font-bold text-xs uppercase text-brand-magenta">Estudiantes</h4>
+                                    <p class="font-extrabold text-slate-900 dark:text-white text-xs mt-1">Laura Isabel Miranda Herrera</p>
+                                    <p class="font-extrabold text-slate-900 dark:text-white text-xs">John Camilo Anturi Palacios</p>
+                                </div>
+                                <div class="p-4 bg-brand-blueSky/30 dark:bg-slate-800 rounded-xl border border-brand-blueSky">
+                                    <h4 class="font-bold text-xs uppercase text-brand-blueSky">Profesor</h4>
+                                    <p class="font-extrabold text-slate-900 dark:text-white text-xs mt-1">Eduardo Serafín Guevara Melo</p>
+                                </div>
+                                <div class="p-4 bg-brand-yellowAccent/30 dark:bg-slate-800 rounded-xl border border-brand-yellowAccent">
+                                    <h4 class="font-bold text-xs uppercase text-slate-800 dark:text-brand-yellowAccent">Institución</h4>
+                                    <p class="font-extrabold text-slate-900 dark:text-white text-xs mt-1">Escuela de Diseño Industrial</p>
+                                    <span class="text-[10px] font-bold text-brand-magenta">Semestre 2026-2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> <!-- AQUÍ SE CIERRA EL APARTADO 1 -->
+
+        <!-- APARTADO 2: GLOSARIO DE CONCEPTOS Y LEYES DEL DISEÑO -->
+        <section id="tab-glosario" class="tab-content hidden">
+            <div class="mb-8 border-b-2 border-brand-limeLight pb-4">
+                <h2 class="font-display text-3xl font-extrabold text-slate-900 dark:text-white">Glosario de Conceptos y Leyes del Diseño</h2>
+                <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Definiciones teóricas e ilustraciones vectoriales de Wucius Wong y Eduardo Serafín Guevara Melo</p>
+            </div>
+            <div id="glosarioContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Tarjetas cargadas dinámicamente -->
+            </div>
+        </section>
+       <!-- APARTADO 3: TALLER DE RETÍCULAS (EFECTO DRIFTWALL 3D) -->
+<section id="tab-taller" class="tab-content hidden">
+    <div class="mb-8 border-b-2 border-brand-blueSky pb-4">
+        <h2 class="font-display text-3xl font-extrabold text-slate-900 dark:text-white">Taller de Retículas, Supermódulos y Categoría Semántica</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Explora la composición reticular a través de la galería 3D dinámica</p>
+    </div>
+
+    <!-- Muro 3D DriftWall -->
+    <div class="drift-wall-viewport">
+        <div class="drift-wall-plane" id="driftPlane">
+            
+            <div class="drift-card">
+                <div class="drift-card-inner">
+                    <img src="/a_rotacion_180.png" alt="a">
+                    <div class="drift-card-overlay">
+                        <span class="tag">a</span>
+                        <p>Retícula con rotación de 180° con módulos</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drift-card">
+                <div class="drift-card-inner">
+                    <img src="/b_composicion_modulos.png" alt="b">
+                    <div class="drift-card-overlay">
+                        <span class="tag">b</span>
+                        <p>Composición de módulos con rotación</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drift-card">
+                <div class="drift-card-inner">
+                    <img src="/c_teselado_reticula.png" alt="c">
+                    <div class="drift-card-overlay">
+                        <span class="tag">c</span>
+                        <p>Teselado, retícula y supermódulo</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drift-card">
+                <div class="drift-card-inner">
+                    <img src="/d_supermodulos_direccion.png" alt="d">
+                    <div class="drift-card-overlay">
+                        <span class="tag">d</span>
+                        <p>Supermódulos y rotación con dirección</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drift-card">
+                <div class="drift-card-inner">
+                    <img src="/e_teselado_supermodulos.png" alt="e">
+                    <div class="drift-card-overlay">
+                        <span class="tag">e</span>
+                        <p>Teselado de supermódulos</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drift-card">
+                <div class="drift-card-inner">
+                    <img src="/f_reticula_gradacion.png" alt="f">
+                    <div class="drift-card-overlay">
+                        <span class="tag">f</span>
+                        <p>Composición con retícula y gradación</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drift-card">
+                <div class="drift-card-inner">
+                    <img src="/g_ritmo_autosimilitud.png" alt="g">
+                    <div class="drift-card-overlay">
+                        <span class="tag">g</span>
+                        <p>Supermódulo con ritmo simple y autosimilitud</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drift-card">
+                <div class="drift-card-inner">
+                    <img src="/h_variacion_ritmo.png" alt="h">
+                    <div class="drift-card-overlay">
+                        <span class="tag">h</span>
+                        <p>Supermódulo con variación de ritmo</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+       <!-- APARTADO 4: CAMPUS DESDE EL DISEÑO -->
+<section id="tab-campus" class="tab-content hidden">
+    <div class="mb-8 border-b-2 border-brand-yellowAccent pb-4">
+        <h2 class="font-display text-3xl font-extrabold text-slate-900 dark:text-white">Nuestro Campus desde el Diseño</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Análisis morfológico y espacial con galería de acordeón interactiva</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Edificio A: Bienestar Universitario -->
+        <div class="searchable-item bg-white dark:bg-slate-900 p-6 rounded-3xl border-4 border-brand-pinkLight shadow-md">
+            <div class="flex items-center space-x-3 mb-4">
+                <span class="w-10 h-10 rounded-full bg-brand-magenta text-white flex items-center justify-center font-extrabold font-display">a</span>
+                <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">Bienestar Universitario</h3>
+            </div>
+            
+            <!-- Galería Acordeón -->
+            <div class="accordion-gallery mb-4">
+                <div class="ag-panel ag-panel--active">
+                    <img src="/bienestar_1.jpg" alt="Fachada Bienestar">
+                    <span class="ag-label">Fachada Modular</span>
+                </div>
+                <div class="ag-panel">
+                    <img src="/bienestar_2.jpg" alt="Interior Bienestar">
+                    <span class="ag-label">Retícula Interior</span>
+                </div>
+                <div class="ag-panel">
+                    <img src="/bienestar_3.jpg" alt="Mobiliario Bienestar">
+                    <span class="ag-label">Mobiliario Seriación</span>
+                </div>
+            </div>
+
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                En el edificio (tanto en la fachada como en el interior) se puede observar un módulo orgánico, un módulo hexagonal regular. Podemos ver una retícula formal modular de repetición con ritmo alternado, retícula de teselado regular (mosaico), Retícula modular tridimensional ordenada en hileras paralelas con repetición formal estricta (bancas/mesas integradas).
+            </p>
+            <div class="flex flex-wrap gap-2">
+                <span class="text-xs bg-brand-pinkLight text-slate-900 font-bold px-3 py-1 rounded-full">Pregnancia</span>
+                <span class="text-xs bg-brand-limeLight text-slate-900 font-bold px-3 py-1 rounded-full">Catamorfia</span>
+                <span class="text-xs bg-brand-blueSky text-slate-900 font-bold px-3 py-1 rounded-full">Euritmia</span>
+            </div>
+        </div>
+
+        <!-- Edificio B: Biblioteca -->
+        <div class="searchable-item bg-white dark:bg-slate-900 p-6 rounded-3xl border-4 border-brand-blueSky shadow-md">
+            <div class="flex items-center space-x-3 mb-4">
+                <span class="w-10 h-10 rounded-full bg-brand-blueSky text-slate-900 flex items-center justify-center font-extrabold font-display">b</span>
+                <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">Biblioteca</h3>
+            </div>
+            
+            <!-- Galería Acordeón -->
+            <div class="accordion-gallery mb-4">
+                <div class="ag-panel ag-panel--active">
+                    <img src="/biblioteca_1.jpg" alt="Fachada Biblioteca">
+                    <span class="ag-label">Fachada Principal</span>
+                </div>
+                <div class="ag-panel">
+                    <img src="/biblioteca_2.jpg" alt="Detalle Concreto">
+                    <span class="ag-label">Módulo Concreto</span>
+                </div>
+                <div class="ag-panel">
+                    <img src="/biblioteca_3.jpg" alt="Piso Granito">
+                    <span class="ag-label">Trama de Piso</span>
+                </div>
+            </div>
+
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                Mediante análisis se encontró un módulo de sección perfilada en concreto con ligera curvatura, módulo cerámico ortogonal de baja escala, un submodulo ritmico continuo en la fachada pasando a una retícula modular compuesta por baldosas de granito pulido y ladrillos rectangulares junto con la fachada principal está gobernada por una retícula ortogonal regular de repetición con ritmo simple.
+            </p>
+            <div class="flex flex-wrap gap-2">
+                <span class="text-xs bg-brand-blueSky text-slate-900 font-bold px-3 py-1 rounded-full">Interfaz Perceptible</span>
+                <span class="text-xs bg-brand-yellowAccent text-slate-900 font-bold px-3 py-1 rounded-full">Proximidad & Semejanza</span>
+            </div>
+        </div>
+
+        <!-- Edificio C: Ingenierías Fisicomecánicas -->
+        <div class="searchable-item bg-white dark:bg-slate-900 p-6 rounded-3xl border-4 border-brand-yellowAccent shadow-md">
+            <div class="flex items-center space-x-3 mb-4">
+                <span class="w-10 h-10 rounded-full bg-brand-yellowAccent text-slate-900 flex items-center justify-center font-extrabold font-display">c</span>
+                <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">Ingenierías Fisicomecánicas</h3>
+            </div>
+            
+            <!-- Galería Acordeón -->
+            <div class="accordion-gallery mb-4">
+                <div class="ag-panel ag-panel--active">
+                    <img src="/fisico_1.jpg" alt="Pórticos Concreto">
+                    <span class="ag-label">Pórticos Estructurales</span>
+                </div>
+                <div class="ag-panel">
+                    <img src="/fisico_2.jpg" alt="Terraza Listones">
+                    <span class="ag-label">Terraza Reticular</span>
+                </div>
+                <div class="ag-panel">
+                    <img src="/fisico_3.jpg" alt="Planos Hexagonales">
+                    <span class="ag-label">Módulo Atómico</span>
+                </div>
+            </div>
+
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                Se hace evidente un módulo compuesto por pórticos de concreto a la vista, un módulo atómico hexagonal irregular/planos y una Retícula modular compuesta por listones rectangulares paralelos dispuestos en franjas lineales alternadas en la terraza exterior.
+            </p>
+            <div class="flex flex-wrap gap-2">
+                <span class="text-xs bg-brand-yellowAccent text-slate-900 font-bold px-3 py-1 rounded-full">Catamorfía & Similitud</span>
+                <span class="text-xs bg-brand-pinkLight text-slate-900 font-bold px-3 py-1 rounded-full">Figura-Fondo</span>
+            </div>
+        </div>
+
+        <!-- Edificio D: Bienestar Pro -->
+        <div class="searchable-item bg-white dark:bg-slate-900 p-6 rounded-3xl border-4 border-brand-limeLight shadow-md">
+            <div class="flex items-center space-x-3 mb-4">
+                <span class="w-10 h-10 rounded-full bg-brand-limeLight text-slate-900 flex items-center justify-center font-extrabold font-display">d</span>
+                <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">Bienestar Pro</h3>
+            </div>
+            
+            <!-- Galería Acordeón -->
+            <div class="accordion-gallery mb-4">
+                <div class="ag-panel ag-panel--active">
+                    <img src="/pro_1.jpg" alt="Cerámica Angular">
+                    <span class="ag-label">Módulo Angular</span>
+                </div>
+                <div class="ag-panel">
+                    <img src="/pro_2.jpg" alt="Techo Cúbico">
+                    <span class="ag-label">Trama de Techo</span>
+                </div>
+                <div class="ag-panel">
+                    <img src="/pro_3.jpg" alt="Revestimiento Vertical">
+                    <span class="ag-label">Rayado Vertical</span>
+                </div>
+            </div>
+
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                Notamos un módulo cerámico tridimensional con una ligera inclinación o desfase angular. Funciona como una pieza unitaria simple que se repite en el paramento exterior, un módulo cuadrangular profundo de concreto o madera que genera una trama reticular tridimensional ortogonal en el techo y un módulo de revestimiento rayado vertical interior.
+            </p>
+            <div class="flex flex-wrap gap-2">
+                <span class="text-xs bg-brand-limeLight text-slate-900 font-bold px-3 py-1 rounded-full">Gradación Angular</span>
+                <span class="text-xs bg-brand-magenta text-white font-bold px-3 py-1 rounded-full">Retícula Radial</span>
+            </div>
+        </div>
+
+    </div>
+</section>
+        </section>
+
+<!-- APARTADO 5: ANÁLISIS DE ARTEFACTOS -->
+<section id="tab-artefactos" class="tab-content hidden">
+    <div class="mb-8 border-b-2 border-brand-magenta pb-4">
+        <h2 class="font-display text-3xl font-extrabold text-slate-900 dark:text-white">Análisis de Artefactos</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Estudio morfológico, coherencia y estructura en sistemas de diseño</p>
+    </div>
+
+    <!-- Botones de selección de categoría -->
+    <div class="flex flex-wrap justify-center gap-4 mb-8">
+        <button onclick="showSubCategory('mod')" class="slice">
+            <span class="text text-xs sm:text-sm">1. Modularidad</span>
+        </button>
+        <button onclick="showSubCategory('coh')" class="slice">
+            <span class="text text-xs sm:text-sm">2. Coherencia Formal</span>
+        </button>
+        <button onclick="showSubCategory('est')" class="slice">
+            <span class="text text-xs sm:text-sm">3. Estructura Natural</span>
+        </button>
+    </div>
+
+    <!-- Contenedores donde JavaScript inyectará las tarjetas -->
+    <div id="sub-mod" class="sub-category-content grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+    <div id="sub-coh" class="sub-category-content hidden grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+    <div id="sub-est" class="sub-category-content hidden grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+</section>
+
+<!-- JavaScript Externo -->
+<script src="./scripts.js"></script>
+</body>
+</html>

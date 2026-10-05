@@ -1,0 +1,514 @@
+/* --- NAVEGACIÓN Y FONDO PRINCIPAL --- */
+.hero-bg-overlay {
+    background-image: url('/campus.jpeg');
+    opacity: 0.45;
+    transition: transform 0.15s ease-out;
+}
+
+.dark .hero-bg-overlay {
+    opacity: 0.30;
+}
+
+/* Transición tipo Pixel Swap */
+.pixel-swap-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.pixel-swap-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(#F034BF 15%, transparent 16%);
+    background-size: 16px 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.pixel-swap-card:hover::before {
+    opacity: 0.15;
+}
+
+/* --- TARJETAS DE CONCEPTOS Y GLOSARIO (.card) --- */
+.card {
+  width: 100%;
+  background: #F0FFC7;
+  color: #0f172a;
+  position: relative;
+  border-radius: 2em;
+  padding: 1.6em;
+  border: 2px solid #e2e8f0;
+  transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+  box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.05);
+}
+
+.dark .card {
+  background: #1e293b;
+  color: #f8fafc;
+  border-color: #334155;
+}
+
+.card .card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.2em;
+  height: 100%;
+  transition: transform 0.4s ease;
+}
+
+.card .card-top, .card .card-bottom {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card .card-top p, .card .card-top .card-title, .card .card-bottom p, .card .card-bottom .card-title {
+  margin: 0;
+}
+
+.card .card-title {
+  font-weight: 800;
+  font-family: 'Space Grotesk', sans-serif;
+  color: #0f172a;
+}
+
+.dark .card .card-title {
+  color: #F0FFC7;
+}
+
+.card .card-top p, .card .card-bottom p {
+  font-weight: 600;
+}
+
+.card .card-bottom {
+  align-items: flex-end;
+}
+
+.card .card-image {
+  position: relative;
+  width: 100%;
+  height: 80px;
+  display: grid;
+  place-items: center;
+  margin: 0.2em 0;
+}
+
+.card .card-image svg {
+  width: 4.2em;
+  height: 4.2em;
+  transition: transform 0.4s ease;
+}
+
+.card:hover {
+  cursor: pointer;
+  transform: scale(0.97);
+  border-color: #F034BF;
+}
+
+.card:hover .card-content {
+  transform: scale(0.96);
+}
+
+.card:hover .card-image svg {
+  transform: scale(1.1);
+}
+
+.card:active {
+  transform: scale(0.92);
+}
+
+/* Estilos de botones PillNav */
+.pill-nav-btn {
+    color: #475569;
+}
+
+.pill-nav-btn.active {
+    background-color: #F034BF;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(240, 52, 191, 0.3);
+}
+
+.pill-nav-btn:hover:not(.active) {
+    background-color: #FFCEC7;
+    color: #0f172a;
+}
+
+/* Botón Personalizado .slice */
+.slice {
+  --c1: #ffffff;
+  --c2: #F034BF;
+  --size-letter: 16px;
+  padding: 0.6em 1.2em;
+  font-size: var(--size-letter);
+  background-color: #FFCEC7;
+  border: calc(var(--size-letter) / 6) solid var(--c2);
+  border-radius: 0.5em;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  transition: 300ms cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+.slice > .text {
+  font-weight: 800;
+  color: #0f172a;
+  position: relative;
+  z-index: 1;
+  transition: color 700ms cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+.slice::after {
+  content: "";
+  width: 0;
+  height: calc(300% + 1em);
+  position: absolute;
+  translate: -50% -50%;
+  inset: 50%;
+  rotate: 30deg;
+  background-color: var(--c2);
+  transition: 1000ms cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+.slice:hover > .text {
+  color: var(--c1);
+}
+
+.slice:hover::after {
+  width: calc(120% + 1em);
+}
+
+/* Switch Modo Oscuro/Claro */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch #input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #93B5FF;
+  transition: 0.4s;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.sun-moon {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: #FDE403;
+  transition: 0.4s;
+}
+
+#input:checked + .slider {
+  background-color: #0c4a6e;
+}
+
+#input:checked + .slider .sun-moon {
+  transform: translateX(26px);
+  background-color: white;
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round .sun-moon {
+  border-radius: 50%;
+}
+
+/* --- EFECTO DRIFTWALL 3D (TALLER) --- */
+.drift-wall-viewport {
+    width: 100%;
+    height: 600px;
+    perspective: 1200px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 2em;
+    background: #090d16;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.drift-wall-plane {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 40px;
+    transform-style: preserve-3d;
+    transform: rotateX(16deg) rotateY(-14deg) translateZ(-60px) scale(1.05);
+    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.drift-card {
+    position: relative;
+    perspective: 1000px;
+}
+
+.drift-card-inner {
+    width: 100%;
+    height: 220px;
+    background: #1e293b;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid rgba(240, 52, 191, 0.3);
+    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.drift-card-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 12px;
+    background: #ffffff;
+    transition: transform 0.4s ease;
+}
+
+.dark .drift-card-inner img {
+    background: #0f172a;
+}
+
+.drift-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(9, 13, 22, 0.95), transparent 60%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 14px;
+    color: #ffffff;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
+.drift-card-overlay .tag {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    background: #F034BF;
+    color: #ffffff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    width: fit-content;
+    margin-bottom: 4px;
+}
+
+.drift-card-overlay p {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.drift-card:hover .drift-card-inner {
+    transform: translateZ(50px) scale(1.08);
+    border-color: #F034BF;
+    box-shadow: 0 20px 35px rgba(240, 52, 191, 0.4);
+    z-index: 20;
+}
+
+.drift-card:hover img {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .drift-wall-plane {
+        grid-template-columns: repeat(2, 1fr);
+        transform: rotateX(8deg) rotateY(-6deg) scale(0.95);
+    }
+    .drift-card-inner {
+        height: 160px;
+    }
+}
+
+/* --- GALERÍA EN ACORDEÓN (CAMPUS) --- */
+.accordion-gallery {
+    display: flex;
+    gap: 8px;
+    height: 200px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.ag-panel {
+    flex: 1;
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: flex 0.5s cubic-bezier(0.25, 1, 0.5, 1), filter 0.4s ease;
+    filter: grayscale(80%) brightness(0.85);
+}
+
+.ag-panel.ag-panel--active {
+    flex: 3;
+    filter: grayscale(0%) brightness(1);
+}
+
+.ag-panel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.ag-panel:hover img {
+    transform: scale(1.05);
+}
+
+.ag-label {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(15, 23, 42, 0.85);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    backdrop-filter: blur(4px);
+}
+
+.ag-panel.ag-panel--active .ag-label {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- ESTRUCTURA UNIFICADA PARA TARJETAS 3D DE ARTEFACTOS --- */
+.artifact-parent {
+  width: 100%;
+  perspective: 1000px;
+}
+
+.artifact-card {
+  position: relative;
+  background-color: #ffffff;
+  border: 3px solid #F034BF !important;
+  border-radius: 1.5rem !important;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(240, 52, 191, 0.15);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.dark .artifact-card {
+  background-color: #0f172a;
+  border-color: #F034BF !important;
+}
+
+.artifact-card:hover {
+  transform: translateY(-5px) rotate3d(0.2, 1, 0, 4deg);
+  box-shadow: 0 20px 35px rgba(240, 52, 191, 0.3);
+}
+
+/* Espacio e imagen del artefacto */
+.artifact-img-container {
+  width: 100%;
+  height: 200px;
+  background-color: #f1f5f9;
+  position: relative;
+  overflow: hidden;
+}
+
+.artifact-img {
+  width: 100%;
+  height: 100% !important;
+  object-fit: cover;
+  display: block !important;
+  transition: transform 0.5s ease;
+}
+
+.artifact-card:hover .artifact-img {
+  transform: scale(1.05);
+}
+
+/* Insignia con número */
+.artifact-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #ffffff;
+  border: 2px solid #F034BF;
+  border-radius: 10px;
+  padding: 4px 8px;
+  text-align: center;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.artifact-badge .badge-label {
+  display: block;
+  font-size: 8px;
+  font-weight: 800;
+  color: #F034BF;
+  text-transform: uppercase;
+}
+
+.artifact-badge .badge-num {
+  display: block;
+  font-size: 14px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+/* Caja de texto inferior */
+.artifact-content-box {
+  padding: 20px;
+  background: linear-gradient(to bottom, #ffffff, #fff5fc);
+}
+
+.dark .artifact-content-box {
+  background: linear-gradient(to bottom, #0f172a, #1e1b2e);
+}
+
+.artifact-title {
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  color: #F034BF !important;
+  margin-bottom: 8px;
+}
+
+.artifact-desc {
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  color: #334155 !important;
+  margin-bottom: 12px;
+}
+
+.dark .artifact-desc {
+  color: #cbd5e1 !important;
+}
+
+.artifact-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #F034BF;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
