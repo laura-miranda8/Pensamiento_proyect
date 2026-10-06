@@ -1,6 +1,6 @@
 /* --- NAVEGACIÓN Y FONDO PRINCIPAL --- */
 .hero-bg-overlay {
-    background-image: url('/campus.jpeg');
+    background-image: url('./campus.jpeg');
     opacity: 0.45;
     transition: transform 0.15s ease-out;
 }
