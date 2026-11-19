@@ -323,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ctx = canvas.getContext('2d');
 
     const img = new Image();
-    img.src = '/campus.jpeg';
+    img.src = './campus.jpeg';
 
     const pixelSize = 40;
     let pixels = [];
