@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitácora Digital Pensamiento de Diseño II</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Hoja de Estilos Personalizada -->
+    <link rel="stylesheet" href="./estilos.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            pinkLight: '#FFCEC7',
+                            magenta: '#F034BF',
+                            blueSky: '#93B5FF',
+                            limeLight: '#F0FFC7',
+                            yellowAccent: '#FDE403',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Space Grotesk"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- Navegación Superior Estilo PillNav -->
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b-2 border-brand-magenta shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <div class="flex items-center space-x-3 shrink-0">
+                <div class="w-10 h-10 rounded-2xl bg-brand-magenta flex items-center justify-center text-white font-display font-bold text-xl shadow-md">
+                    DII
+                </div>
+                <div>
+                    <h1 class="font-display font-extrabold text-brand-magenta dark:text-brand-pinkLight text-base sm:text-lg leading-tight">Bitácora Digital</h1>
+                    <span class="text-xs text-slate-600 dark:text-brand-blueSky font-semibold tracking-wider uppercase">Pensamiento de Diseño II</span>
+                </div>
+            </div>
+
+            <!-- Menú de Pestañas PillNav (8 Apartados) -->
+            <nav class="hidden lg:flex items-center bg-slate-100 dark:bg-slate-800 p-1.5 rounded-full border border-slate-200 dark:border-slate-700 shadow-inner">
+                <button onclick="switchTab('introduccion')" class="pill-nav-btn active px-3 py-2 rounded-full text-xs font-bold transition-all duration-300" data-tab="introduccion">1. Introducción</button>
+                <button onclick="switchTab('glosario')" class="pill-nav-btn px-3 py-2 rounded-full text-xs font-bold transition-all duration-300" data-tab="glosario">2. Conceptos & Leyes</button>
+                <button onclick="switchTab('taller')" class="pill-nav-btn px-3 py-2 rounded-full text-xs font-bold transition-all duration-300" data-tab="taller">3. Taller Retículas</button>
+                <button onclick="switchTab('campus')" class="pill-nav-btn px-3 py-2 rounded-full text-xs font-bold transition-all duration-300" data-tab="campus">4. Campus Diseño</button>
+                <button onclick="switchTab('artefactos')" class="pill-nav-btn px-3 py-2 rounded-full text-xs font-bold transition-all duration-300" data-tab="artefactos">5. Artefactos</button>
+                <button onclick="switchTab('concepto')" class="pill-nav-btn px-3 py-2 rounded-full text-xs font-bold transition-all duration-300" data-tab="concepto">6. Concepto a Práctica</button>
+                <button onclick="switchTab('boceto')" class="pill-nav-btn px-3 py-2 rounded-full text-xs font-bold transition-all duration-300" data-tab="boceto">7. Boceto a Práctica</button>
+                <button onclick="switchTab('resultado')" class="pill-nav-btn px-3 py-2 rounded-full text-xs font-bold transition-all duration-300" data-tab="resultado">8. Resultado Final</button>
+            </nav>
+
+            <!-- Buscador y Switch Modo Claro/Oscuro -->
+            <div class="flex items-center space-x-3 shrink-0">
+                <div class="relative max-w-[170px] hidden sm:block">
+                    <input type="text" id="globalSearch" onkeyup="searchGlobal()" 
+                        placeholder="Buscar concepto..." 
+                        class="w-full pl-8 pr-3 py-1.5 bg-slate-100 dark:bg-slate-800 border-2 border-brand-blueSky rounded-full text-xs font-medium focus:outline-none focus:border-brand-magenta">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                </div>
+
+                <label class="switch scale-90">
+                    <input type="checkbox" id="input" onchange="toggleDarkMode()">
+                    <span class="slider round">
+                        <span class="sun-moon">
+                            <span class="moon-dot" id="moon-dot-1"></span>
+                            <span class="moon-dot" id="moon-dot-2"></span>
+                            <span class="moon-dot" id="moon-dot-3"></span>
+                        </span>
+                        <span class="stars">
+                            <svg class="star" id="star-1" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+                        </span>
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Menú móvil/tablet horizontal integrado bajo la barra principal -->
+        <div class="lg:hidden flex overflow-x-auto py-2 px-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 gap-2">
+            <button onclick="switchTab('introduccion')" class="pill-nav-btn active whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold" data-tab="introduccion">1. Intro</button>
+            <button onclick="switchTab('glosario')" class="pill-nav-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold" data-tab="glosario">2. Conceptos</button>
+            <button onclick="switchTab('taller')" class="pill-nav-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold" data-tab="taller">3. Taller</button>
+            <button onclick="switchTab('campus')" class="pill-nav-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold" data-tab="campus">4. Campus</button>
+            <button onclick="switchTab('artefactos')" class="pill-nav-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold" data-tab="artefactos">5. Artefactos</button>
+            <button onclick="switchTab('concepto')" class="pill-nav-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold" data-tab="concepto">6. Concepto</button>
+            <button onclick="switchTab('boceto')" class="pill-nav-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold" data-tab="boceto">7. Boceto</button>
+            <button onclick="switchTab('resultado')" class="pill-nav-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold" data-tab="resultado">8. Resultado</button>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL DE SECCIONES -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <!-- APARTADO 1: INTRODUCCIÓN CON FONDO PIXEL SWAP -->
+        <section id="tab-introduccion" class="tab-content">
+            <div class="hero-bg-container relative p-8 sm:p-12 rounded-3xl border-4 border-brand-pinkLight shadow-2xl overflow-hidden text-center min-h-[500px] flex flex-col justify-center items-center bg-slate-900">
+                
+                <!-- Canvas para el efecto de píxeles interactivos -->
+                <canvas id="pixelCanvas" class="absolute inset-0 w-full h-full object-cover opacity-60 z-0 pointer-events-none"></canvas>
+
+                <div class="relative z-10 w-full max-w-4xl mx-auto">
+                    <span class="font-display tracking-widest text-brand-magenta font-bold uppercase text-xs block mb-2">Bitácora Digital</span>
+                    <h1 class="font-display text-3xl sm:text-5xl font-extrabold text-white mb-6">
+                        Pensamiento de Diseño II
+                    </h1>
+
+                    <!-- Componente Card PixelSwap -->
+                    <div class="pixel-swap-card cursor-pointer group my-6 p-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border-2 border-brand-magenta shadow-lg transition-all duration-500" onclick="togglePixelCard(this)">
+                        <div class="card-front transition-opacity duration-300">
+                            <i class="fa-solid fa-wand-magic-sparkles text-brand-magenta text-3xl mb-2 animate-bounce"></i>
+                            <p class="font-bold text-slate-800 dark:text-slate-100 text-sm">Haz clic o pasa el cursor para revelar la información del equipo de investigación</p>
+                        </div>
+
+                        <div class="card-back hidden transition-opacity duration-300">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+                                <div class="p-4 bg-brand-pinkLight/30 dark:bg-slate-800 rounded-xl border border-brand-magenta">
+                                    <h4 class="font-bold text-xs uppercase text-brand-magenta">Estudiantes</h4>
+                                    <p class="font-extrabold text-slate-900 dark:text-white text-xs mt-1">Laura Isabel Miranda Herrera</p>
+                                    <p class="font-extrabold text-slate-900 dark:text-white text-xs">John Camilo Anturi Palacios</p>
+                                    <p class="font-extrabold text-slate-900 dark:text-white text-xs">Andres Felipe Galvis Rodriguez</p>
+                                </div>
+                                <div class="p-4 bg-brand-blueSky/30 dark:bg-slate-800 rounded-xl border border-brand-blueSky">
+                                    <h4 class="font-bold text-xs uppercase text-brand-blueSky">Profesor</h4>
+                                    <p class="font-extrabold text-slate-900 dark:text-white text-xs mt-1">Eduardo Serafín Guevara Melo</p>
+                                </div>
+                                <div class="p-4 bg-brand-yellowAccent/30 dark:bg-slate-800 rounded-xl border border-brand-yellowAccent">
+                                    <h4 class="font-bold text-xs uppercase text-slate-800 dark:text-brand-yellowAccent">Institución</h4>
+                                    <p class="font-extrabold text-slate-900 dark:text-white text-xs mt-1">Escuela de Diseño Industrial</p>
+                                    <span class="text-[10px] font-bold text-brand-magenta">Semestre 2026-2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- APARTADO 2: GLOSARIO DE CONCEPTOS Y LEYES DEL DISEÑO -->
+        <section id="tab-glosario" class="tab-content hidden">
+            <div class="mb-8 border-b-2 border-brand-limeLight pb-4">
+                <h2 class="font-display text-3xl font-extrabold text-slate-900 dark:text-white">Glosario de Conceptos y Leyes del Diseño</h2>
+                <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Definiciones teóricas e ilustraciones vectoriales de Wucius Wong y Eduardo Serafín Guevara Melo</p>
+            </div>
+            <div id="glosarioContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Tarjetas cargadas dinámicamente -->
+            </div>
+        </section>
+
+        <!-- APARTADO 3: TALLER DE RETÍCULAS (CARRUSEL 3D CON PERSPECTIVA) -->
+        <section id="tab-taller" class="tab-content hidden">
+            <div class="mb-8 border-b-2 border-brand-blueSky pb-4">
+                <h2 class="font-display text-3xl font-extrabold text-slate-900 dark:text-white">Taller de Retículas, Supermódulos y Categoría Semántica</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Explora la composición reticular a través del carrusel interactivo en perspectiva</p>
+            </div>
+
+            <div class="perspective-carousel-wrapper relative w-full h-[500px] bg-slate-100 dark:bg-slate-900 rounded-3xl border-4 border-brand-blueSky shadow-xl overflow-hidden flex flex-col items-center justify-center select-none">
+                
+                <!-- Escenario 3D -->
+                <div id="tallerCarouselStage" class="perspective-stage">
+                    <div class="p-slide">
+                        <img src="./a_rotacion_180.png" alt="a" onerror="this.onerror=null; this.src='https://picsum.photos/300/400?random=taller1';">
+                        <div class="p-slide-caption">
+                            <span class="tag">Lámina A</span>
+                            <p>Retícula con rotación de 180° con módulos</p>
+                        </div>
+                    </div>
+
+                    <div class="p-slide">
+                        <img src="./b_composicion_modulos.png" alt="b" onerror="this.onerror=null; this.src='https://picsum.photos/300/400?random=taller2';">
+                        <div class="p-slide-caption">
+                            <span class="tag">Lámina B</span>
+                            <p>Composición de módulos con rotación</p>
+                        </div>
+                    </div>
+
+                    <div class="p-slide">
+                        <img src="./c_teselado_reticula.png" alt="c" onerror="this.onerror=null; this.src='https://picsum.photos/300/400?random=taller3';">
+                        <div class="p-slide-caption">
+                            <span class="tag">Lámina C</span>
+                            <p>Teselado, retícula y supermódulo</p>
+                        </div>
+                    </div>
+
+                    <div class="p-slide">
+                        <img src="./d_supermodulos_direccion.png" alt="d" onerror="this.onerror=null; this.src='https://picsum.photos/300/400?random=taller4';">
+                        <div class="p-slide-caption">
+                            <span class="tag">Lámina D</span>
+                            <p>Supermódulos y rotación con dirección</p>
+                        </div>
+                    </div>
+
+                    <div class="p-slide">
+                        <img src="./e_teselado_supermodulos.png" alt="e" onerror="this.onerror=null; this.src='https://picsum.photos/300/400?random=taller5';">
+                        <div class="p-slide-caption">
+                            <span class="tag">Lámina E</span>
+                            <p>Teselado de supermódulos</p>
+                        </div>
+                    </div>
+
+                    <div class="p-slide">
+                        <img src="./f_reticula_gradacion.png" alt="f" onerror="this.onerror=null; this.src='https://picsum.photos/300/400?random=taller6';">
+                        <div class="p-slide-caption">
+                            <span class="tag">Lámina F</span>
+                            <p>Composición con retícula y gradación</p>
+                        </div>
+                    </div>
+
+                    <div class="p-slide">
+                        <img src="./g_ritmo_autosimilitud.png" alt="g" onerror="this.onerror=null; this.src='https://picsum.photos/300/400?random=taller7';">
+                        <div class="p-slide-caption">
+                            <span class="tag">Lámina G</span>
+                            <p>Supermódulo con ritmo simple y autosimilitud</p>
+                        </div>
+                    </div>
+
+                    <div class="p-slide">
+                        <img src="./h_variacion_ritmo.png" alt="h" onerror="this.onerror=null; this.src='https://picsum.photos/300/400?random=taller8';">
+                        <div class="p-slide-caption">
+                            <span class="tag">Lámina H</span>
+                            <p>Supermódulo con variación de ritmo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones Prev / Next -->
+                <button id="tallerPrevBtn" class="absolute left-4 z-30 w-11 h-11 rounded-full bg-white/90 dark:bg-slate-800/90 text-brand-magenta border-2 border-brand-magenta shadow-md flex items-center justify-center hover:bg-brand-magenta hover:text-white transition-all cursor-pointer">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button id="tallerNextBtn" class="absolute right-4 z-30 w-11 h-11 rounded-full bg-white/90 dark:bg-slate-800/90 text-brand-magenta border-2 border-brand-magenta shadow-md flex items-center justify-center hover:bg-brand-magenta hover:text-white transition-all cursor-pointer">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+
+                <!-- Puntos indicadores -->
+                <div id="tallerDots" class="absolute bottom-4 z-30 flex items-center space-x-2"></div>
+            </div>
+        </section>
+
+        <!-- APARTADO 4: CAMPUS DESDE EL DISEÑO -->
+        <section id="tab-campus" class="tab-content hidden">
+            <div class="mb-8 border-b-2 border-brand-yellowAccent pb-4">
+                <h2 class="font-display text-3xl font-extrabold text-slate-900 dark:text-white">Nuestro Campus desde el Diseño</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Análisis morfológico y espacial con galería de acordeón interactiva</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Edificio A: Bienestar Universitario -->
+                <div class="searchable-item bg-white dark:bg-slate-900 p-6 rounded-3xl border-4 border-brand-pinkLight shadow-md">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <span class="w-10 h-10 rounded-full bg-brand-magenta text-white flex items-center justify-center font-extrabold font-display">a</span>
+                        <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">Bienestar Universitario</h3>
+                    </div>
+                    
+                    <div class="accordion-gallery mb-4">
+                        <div class="ag-panel ag-panel--active">
+                            <img src="./bienestar_1.jpg" alt="Fachada Bienestar">
+                            <span class="ag-label">Fachada Modular</span>
+                        </div>
+                        <div class="ag-panel">
+                            <img src="./bienestar_2.jpg" alt="Interior Bienestar">
+                            <span class="ag-label">Retícula Interior</span>
+                        </div>
+                        <div class="ag-panel">
+                            <img src="./bienestar_3.jpg" alt="Mobiliario Bienestar">
+                            <span class="ag-label">Mobiliario Seriación</span>
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                        En el edificio (tanto en la fachada como en el interior) se puede observar un módulo orgánico, un módulo hexagonal regular. Podemos ver una retícula formal modular de repetición con ritmo alternado, retícula de teselado regular (mosaico), Retícula modular tridimensional ordenada en hileras paralelas con repetición formal estricta (bancas/mesas integradas).
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs bg-brand-pinkLight text-slate-900 font-bold px-3 py-1 rounded-full">Pregnancia</span>
+                        <span class="text-xs bg-brand-limeLight text-slate-900 font-bold px-3 py-1 rounded-full">Catamorfia</span>
+                        <span class="text-xs bg-brand-blueSky text-slate-900 font-bold px-3 py-1 rounded-full">Euritmia</span>
+                    </div>
+                </div>
+
+                <!-- Edificio B: Biblioteca -->
+                <div class="searchable-item bg-white dark:bg-slate-900 p-6 rounded-3xl border-4 border-brand-blueSky shadow-md">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <span class="w-10 h-10 rounded-full bg-brand-blueSky text-slate-900 flex items-center justify-center font-extrabold font-display">b</span>
+                        <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">Biblioteca</h3>
+                    </div>
+                    
+                    <div class="accordion-gallery mb-4">
+                        <div class="ag-panel ag-panel--active">
+                            <img src="./biblioteca_1.jpg" alt="Fachada Biblioteca">
+                            <span class="ag-label">Fachada Principal</span>
+                        </div>
+                        <div class="ag-panel">
+                            <img src="./biblioteca_2.jpg" alt="Detalle Concreto">
+                            <span class="ag-label">Módulo Concreto</span>
+                        </div>
+                        <div class="ag-panel">
+                            <img src="./biblioteca_3.jpg" alt="Piso Granito">
+                            <span class="ag-label">Trama de Piso</span>
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                        Mediante análisis se encontró un módulo de sección perfilada en concreto con ligera curvatura, módulo cerámico ortogonal de baja escala, un submodulo ritmico continuo en la fachada pasando a una retícula modular compuesta por baldosas de granito pulido y ladrillos rectangulares junto con la fachada principal está gobernada por una retícula ortogonal regular de repetición con ritmo simple.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs bg-brand-blueSky text-slate-900 font-bold px-3 py-1 rounded-full">Interfaz Perceptible</span>
+                        <span class="text-xs bg-brand-yellowAccent text-slate-900 font-bold px-3 py-1 rounded-full">Proximidad & Semejanza</span>
+                    </div>
+                </div>
+
+                <!-- Edificio C: Ingenierías Fisicomecánicas -->
+                <div class="searchable-item bg-white dark:bg-slate-900 p-6 rounded-3xl border-4 border-brand-yellowAccent shadow-md">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <span class="w-10 h-10 rounded-full bg-brand-yellowAccent text-slate-900 flex items-center justify-center font-extrabold font-display">c</span>
+                        <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">Ingenierías Fisicomecánicas</h3>
+                    </div>
+                    
+                    <div class="accordion-gallery mb-4">
+                        <div class="ag-panel ag-panel--active">
+                            <img src="./fisico_1.jpg" alt="Pórticos Concreto">
+                            <span class="ag-label">Pórticos Estructurales</span>
+                        </div>
+                        <div class="ag-panel">
+                            <img src="./fisico_2.jpg" alt="Terraza Listones">
+                            <span class="ag-label">Terraza Reticular</span>
+                        </div>
+                        <div class="ag-panel">
+                            <img src="./fisico_3.jpg" alt="Planos Hexagonales">
+                            <span class="ag-label">Módulo Atómico</span>
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                        Se hace evidente un módulo compuesto por pórticos de concreto a la vista, un módulo atómico hexagonal irregular/planos y una Retícula modular compuesta por listones rectangulares paralelos dispuestos en franjas lineales alternadas en la terraza exterior.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs bg-brand-yellowAccent text-slate-900 font-bold px-3 py-1 rounded-full">Catamorfía & Similitud</span>
+                        <span class="text-xs bg-brand-pinkLight text-slate-900 font-bold px-3 py-1 rounded-full">Figura-Fondo</span>
+                    </div>
+                </div>
+
+                <!-- Edificio D: Bienestar Pro -->
+                <div class="searchable-item bg-white dark:bg-slate-900 p-6 rounded-3xl border-4 border-brand-limeLight shadow-md">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <span class="w-10 h-10 rounded-full bg-brand-limeLight text-slate-900 flex items-center justify-center font-extrabold font-display">d</span>
+                        <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">Bienestar Pro</h3>
+                    </div>
+                    
+                    <div class="accordion-gallery mb-4">
+                        <div class="ag-panel ag-panel--active">
+                            <img src="./pro_1.jpg" alt="Cerámica Angular">
+                            <span class="ag-label">Módulo Angular</span>
+                        </div>
+                        <div class="ag-panel">
+                            <img src="./pro_2.jpg" alt="Techo Cúbico">
+                            <span class="ag-label">Trama de Techo</span>
+                        </div>
+                        <div class="ag-panel">
+                            <img src="./pro_3.jpg" alt="Revestimiento Vertical">
+                            <span class="ag-label">Rayado Vertical</span>
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                        Notamos un módulo cerámico tridimensional con una ligera inclinación o desfase angular. Funciona como una pieza unitaria simple que se repite en el paramento exterior, un módulo cuadrangular profundo de concreto o madera que genera una trama reticular tridimensional ortogonal en el techo y un módulo de revestimiento rayado vertical interior.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs bg-brand-limeLight text-slate-900 font-bold px-3 py-1 rounded-full">Gradación Angular</span>
+                        <span class="text-xs bg-brand-magenta text-white font-bold px-3 py-1 rounded-full">Retícula Radial</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- APARTADO 5: ANÁLISIS DE ARTEFACTOS -->
+        <section id="tab-artefactos" class="tab-content hidden">
+            <div class="mb-8 border-b-2 border-brand-magenta pb-4">
+                <h2 class="font-display text-3xl font-extrabold text-slate-900 dark:text-white">Análisis de Artefactos</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Estudio morfológico, coherencia y estructura en sistemas de diseño</p>
+            </div>
+
+            <!-- Botones de selección de categoría -->
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button onclick="showSubCategory('mod')" class="slice">
+                    <span class="text text-xs sm:text-sm">1. Modularidad</span>
+                </button>
+                <button onclick="showSubCategory('coh')" class="slice">
+                    <span class="text text-xs sm:text-sm">2. Coherencia Formal</span>
+                </button>
+                <button onclick="showSubCategory('est')" class="slice">
+                    <span class="text text-xs sm:text-sm">3. Estructura Natural</span>
+                </button>
+            </div>
+
+            <!-- Contenedores donde JavaScript inyectará las tarjetas -->
+            <div id="sub-mod" class="sub-category-content grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            <div id="sub-coh" class="sub-category-content hidden grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            <div id="sub-est" class="sub-category-content hidden grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </section>
+
+        <!-- APARTADO 6: DEL CONCEPTO A LA PRÁCTICA -->
+        <section id="tab-concepto" class="tab-content hidden">
+            <div class="mb-8 border-b-2 border-brand-magenta pb-4">
+                <h2 class="font-display text-3xl font-extrabold text-slate-900 dark:text-white">Del Concepto a la Práctica</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Haz clic en cualquier imagen, usa las flechas o arrastra para detenerte y leer su análisis</p>
+            </div>
+
+            <!-- Sección 1: Creando Retículas -->
+            <div class="mb-14">
+                <div class="flex items-center space-x-3 mb-4">
+                    <span class="w-8 h-8 rounded-full bg-brand-magenta text-white flex items-center justify-center font-extrabold font-display text-sm">1</span>
+                    <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">Creando Retículas</h3>
+                </div>
+                
+                <!-- Carrusel Cilíndrico -->
+                <div class="cylinder-wrapper w-full h-[440px] bg-[#fff3ed] dark:bg-slate-900 rounded-3xl border-4 border-brand-pinkLight shadow-xl overflow-hidden relative flex items-center justify-center select-none cursor-grab active:cursor-grabbing" id="cylinder-reticulas">
+                    <div class="cylinder-ring"></div>
+                    
+                    <button class="cyl-prev absolute left-4 z-30 w-10 h-10 rounded-full bg-white/90 dark:bg-slate-800/90 text-brand-magenta border-2 border-brand-magenta shadow-md flex items-center justify-center hover:bg-brand-magenta hover:text-white transition-all cursor-pointer">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button class="cyl-next absolute right-4 z-30 w-10 h-10 rounded-full bg-white/90 dark:bg-slate-800/90 text-brand-magenta border-2 border-brand-magenta shadow-md flex items-center justify-center hover:bg-brand-magenta hover:text-white transition-all cursor-pointer">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <!-- Caja de Texto Explicativo Debajo del Carrusel 1 -->
+                <div id="info-reticulas" class="mt-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border-2 border-brand-magenta shadow-md transition-all duration-300">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="cyl-info-badge text-xs font-extrabold uppercase bg-brand-magenta text-white px-3 py-1 rounded-full">Lámina #1</span>
+                        <span class="text-xs text-slate-400 font-semibold">Haz clic o detén el carrusel en una imagen</span>
+                    </div>
+                    <h4 class="cyl-info-title font-display text-xl font-bold text-slate-900 dark:text-white mb-1">Título de la Retícula 1</h4>
+                    <p class="cyl-info-desc text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Explicación detallada de la lámina seleccionada.</p>
+                </div>
+            </div>
+
+            <!-- Sección 2: Creando Composiciones -->
+            <div>
+                <div class="flex items-center space-x-3 mb-4">
+                    <span class="w-8 h-8 rounded-full bg-brand-blueSky text-slate-900 flex items-center justify-center font-extrabold font-display text-sm">2</span>
+                    <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">Creando Composiciones</h3>
+                </div>
+                
+                <!-- Carrusel Cilíndrico -->
+                <div class="cylinder-wrapper w-full h-[440px] bg-[#fff3ed] dark:bg-slate-900 rounded-3xl border-4 border-brand-blueSky shadow-xl overflow-hidden relative flex items-center justify-center select-none cursor-grab active:cursor-grabbing" id="cylinder-composiciones">
+                    <div class="cylinder-ring"></div>
+
+                    <button class="cyl-prev absolute left-4 z-30 w-10 h-10 rounded-full bg-white/90 dark:bg-slate-800/90 text-brand-magenta border-2 border-brand-magenta shadow-md flex items-center justify-center hover:bg-brand-magenta hover:text-white transition-all cursor-pointer">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button class="cyl-next absolute right-4 z-30 w-10 h-10 rounded-full bg-white/90 dark:bg-slate-800/90 text-brand-magenta border-2 border-brand-magenta shadow-md flex items-center justify-center hover:bg-brand-magenta hover:text-white transition-all cursor-pointer">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <!-- Caja de Texto Explicativo Debajo del Carrusel 2 -->
+                <div id="info-composiciones" class="mt-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border-2 border-brand-blueSky shadow-md transition-all duration-300">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="cyl-info-badge text-xs font-extrabold uppercase bg-brand-blueSky text-slate-900 px-3 py-1 rounded-full">Composición #1</span>
+                        <span class="text-xs text-slate-400 font-semibold">Haz clic o detén el carrusel en una imagen</span>
+                    </div>
+                    <h4 class="cyl-info-title font-display text-xl font-bold text-slate-900 dark:text-white mb-1">Título de la Composición 1</h4>
+                    <p class="cyl-info-desc text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Explicación detallada de la lámina seleccionada.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- APARTADO 7: DEL BOCETO A LA PRÁCTICA -->
+        <section id="tab-boceto" class="tab-content hidden">
+            <div class="mb-8 border-b-2 border-brand-yellowAccent pb-4">
+                <h2 class="font-display text-3xl font-extrabold text-slate-900 dark:text-white">Del Boceto a la Práctica</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Transición desde la exploración bidimensional hasta el modelado paramétrico en Fusion 360</p>
+            </div>
+
+            <!-- Botones de Subcategorías -->
+            <div class="flex flex-wrap justify-center gap-4 mb-10">
+                <button onclick="showBocetoSubCategory('proceso')" class="slice">
+                    <span class="text text-xs sm:text-sm">1. Proceso de Creación</span>
+                </button>
+                <button onclick="showBocetoSubCategory('semantica')" class="slice">
+                    <span class="text text-xs sm:text-sm">2. Categoría Semántica</span>
+                </button>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- SUBSECCIÓN 1: PROCESO DE CREACIÓN                         -->
+            <!-- ========================================================= -->
+            <div id="boceto-sub-proceso" class="boceto-sub-content space-y-10">
+                
+                <!-- Bloque A: Galería Acordeón a la izquierda + Texto explicativo a la derecha -->
+                <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border-4 border-brand-pinkLight shadow-md">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <span class="w-9 h-9 rounded-full bg-brand-magenta text-white flex items-center justify-center font-extrabold font-display">1</span>
+                        <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">bocetación de prototipo funcional </h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <!-- Columna Izquierda: Galería Acordeón -->
+                        <div class="lg:col-span-7">
+                            <div class="accordion-gallery accordion-gallery--tall">
+                                <div class="ag-panel ag-panel--active">
+                                    <img src="./boceto_1.jpg" alt="Boceto Inicial" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=boceto1';">
+                                    <span class="ag-label">01. Ideación y Trazos</span>
+                                </div>
+                                <div class="ag-panel">
+                                    <img src="./boceto_2.jpg" alt="Geometrización" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=boceto2';">
+                                    <span class="ag-label">02. Síntesis Reticular</span>
+                                </div>
+                                <div class="ag-panel">
+                                    <img src="./boceto_3.jpg" alt="Detalle de Ensamble" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=boceto3';">
+                                    <span class="ag-label">03. Sistema de Acople</span>
+                                </div>
+                                <div class="ag-panel">
+                                    <img src="./boceto_4.jpg" alt="Planos Técnicos" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=boceto4';">
+                                    <span class="ag-label">04. Planimetría y Cotas</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha: Texto explicativo -->
+                        <div class="lg:col-span-5 flex flex-col justify-center space-y-4">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-brand-magenta bg-brand-pinkLight/40 px-3 py-1 rounded-full w-fit">
+                                De la línea al volumen
+                            </span>
+                            <h4 class="font-display text-xl font-bold text-slate-900 dark:text-white">
+                                ¿Cómo fue el proceso?
+                            </h4>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Primero se seleccionó la composición 2 del catálogo de composición, de aquí a un módulo le extrajimos las figuras que lo componían. Estas figuras las ajustamos para que tuvieran más coherencia formal y le hicimos la modificación de que a medida que vaya avanzando de pieza se le resta un lado (así la primera tiene 12, la segunda 11 y así sucesivamente)
+Estas también le dimos una proposición áurea donde las más grandes son la 1 y 2 encerradas en un rectángulo de 340 por 210, y las demás están encerradas en un rectángulo de 210 por 113.
+Teniendo las figuras en 2d, empezamos los bocetos para hacerlo un artefacto funcional en 3d de encaje, al estilo de un lego.
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Pasa el cursor sobre cada panel de la galería izquierda para desplegar las distintas etapas del boceto.
+                            </p>
+                            <div class="flex flex-wrap gap-2 pt-2">
+                                <span class="text-xs bg-brand-pinkLight text-slate-900 font-bold px-3 py-1 rounded-full">Bocetación</span>
+                                <span class="text-xs bg-brand-blueSky text-slate-900 font-bold px-3 py-1 rounded-full">Geometrización</span>
+                                <span class="text-xs bg-brand-limeLight text-slate-900 font-bold px-3 py-1 rounded-full"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloque B: 6 Espacios para Documentos de Fusion 360 con animación de aumento -->
+                <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border-4 border-brand-blueSky shadow-md">
+                    <div class="flex items-center justify-between flex-wrap gap-2 mb-6">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-9 h-9 rounded-full bg-brand-blueSky text-slate-900 flex items-center justify-center font-extrabold font-display">2</span>
+                            <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">Modelos Paramétricos · Autodesk Fusion 360</h3>
+                        </div>
+                        <span class="text-xs font-bold text-brand-magenta bg-brand-pinkLight/30 px-3 py-1 rounded-full">
+                            6 Archivos CAD (.f3d / .stl)
+                        </span>
+                    </div>
+
+                    <!-- Grid de 6 tarjetas de Fusion 360 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        
+                        <!-- Pieza Fusion 1 -->
+                        <a href="./pieza_1.f3d" download class="fusion-card group block bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-brand-blueSky p-5 shadow-sm">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="w-11 h-11 rounded-xl bg-orange-500 text-white font-display font-extrabold text-lg flex items-center justify-center shadow">F360</span>
+                                <span class="text-[10px] font-extrabold uppercase bg-brand-magenta text-white px-2.5 py-1 rounded-full">Pieza #01</span>
+                            </div>
+                            <div class="w-full h-32 rounded-xl overflow-hidden bg-white dark:bg-slate-900 mb-3 border border-slate-200 dark:border-slate-700">
+                                <img src="./fusion_preview_1.png" alt="Pieza 1 Fusion" class="w-full h-full object-contain p-2" onerror="this.onerror=null; this.src='https://picsum.photos/400/250?random=f3601';">
+                            </div>
+                            <h4 class="font-display font-bold text-base text-slate-900 dark:text-white group-hover:text-brand-magenta transition-colors"></h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">Archivo: <code class="font-mono text-brand-magenta">pieza_1.f3d</code></p>
+                            <span class="inline-flex items-center text-xs font-extrabold text-brand-magenta">
+                                <i class="fa-solid fa-download mr-1.5"></i> Descargar modelo 3D
+                            </span>
+                        </a>
+
+                        <!-- Pieza Fusion 2 -->
+                        <a href="./pieza_2.f3d" download class="fusion-card group block bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-brand-blueSky p-5 shadow-sm">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="w-11 h-11 rounded-xl bg-orange-500 text-white font-display font-extrabold text-lg flex items-center justify-center shadow">F360</span>
+                                <span class="text-[10px] font-extrabold uppercase bg-brand-magenta text-white px-2.5 py-1 rounded-full">Pieza #02</span>
+                            </div>
+                            <div class="w-full h-32 rounded-xl overflow-hidden bg-white dark:bg-slate-900 mb-3 border border-slate-200 dark:border-slate-700">
+                                <img src="./fusion_preview_2.png" alt="Pieza 2 Fusion" class="w-full h-full object-contain p-2" onerror="this.onerror=null; this.src='https://picsum.photos/400/250?random=f3602';">
+                            </div>
+                            <h4 class="font-display font-bold text-base text-slate-900 dark:text-white group-hover:text-brand-magenta transition-colors"></h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">Archivo: <code class="font-mono text-brand-magenta">pieza_2.f3d</code></p>
+                            <span class="inline-flex items-center text-xs font-extrabold text-brand-magenta">
+                                <i class="fa-solid fa-download mr-1.5"></i> Descargar modelo 3D
+                            </span>
+                        </a>
+
+                        <!-- Pieza Fusion 3 -->
+                        <a href="./pieza_3.f3d" download class="fusion-card group block bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-brand-blueSky p-5 shadow-sm">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="w-11 h-11 rounded-xl bg-orange-500 text-white font-display font-extrabold text-lg flex items-center justify-center shadow">F360</span>
+                                <span class="text-[10px] font-extrabold uppercase bg-brand-magenta text-white px-2.5 py-1 rounded-full">Pieza #03</span>
+                            </div>
+                            <div class="w-full h-32 rounded-xl overflow-hidden bg-white dark:bg-slate-900 mb-3 border border-slate-200 dark:border-slate-700">
+                                <img src="./fusion_preview_3.png" alt="Pieza 3 Fusion" class="w-full h-full object-contain p-2" onerror="this.onerror=null; this.src='https://picsum.photos/400/250?random=f3603';">
+                            </div>
+                            <h4 class="font-display font-bold text-base text-slate-900 dark:text-white group-hover:text-brand-magenta transition-colors"></h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">Archivo: <code class="font-mono text-brand-magenta">pieza_3.f3d</code></p>
+                            <span class="inline-flex items-center text-xs font-extrabold text-brand-magenta">
+                                <i class="fa-solid fa-download mr-1.5"></i> Descargar modelo 3D
+                            </span>
+                        </a>
+
+                        <!-- Pieza Fusion 4 -->
+                        <a href="./pieza_4.f3d" download class="fusion-card group block bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-brand-blueSky p-5 shadow-sm">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="w-11 h-11 rounded-xl bg-orange-500 text-white font-display font-extrabold text-lg flex items-center justify-center shadow">F360</span>
+                                <span class="text-[10px] font-extrabold uppercase bg-brand-magenta text-white px-2.5 py-1 rounded-full">Pieza #04</span>
+                            </div>
+                            <div class="w-full h-32 rounded-xl overflow-hidden bg-white dark:bg-slate-900 mb-3 border border-slate-200 dark:border-slate-700">
+                                <img src="./fusion_preview_4.png" alt="Pieza 4 Fusion" class="w-full h-full object-contain p-2" onerror="this.onerror=null; this.src='https://picsum.photos/400/250?random=f3604';">
+                            </div>
+                            <h4 class="font-display font-bold text-base text-slate-900 dark:text-white group-hover:text-brand-magenta transition-colors"></h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">Archivo: <code class="font-mono text-brand-magenta">pieza_4.f3d</code></p>
+                            <span class="inline-flex items-center text-xs font-extrabold text-brand-magenta">
+                                <i class="fa-solid fa-download mr-1.5"></i> Descargar modelo 3D
+                            </span>
+                        </a>
+
+                        <!-- Pieza Fusion 5 -->
+                        <a href="./pieza_5.f3d" download class="fusion-card group block bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-brand-blueSky p-5 shadow-sm">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="w-11 h-11 rounded-xl bg-orange-500 text-white font-display font-extrabold text-lg flex items-center justify-center shadow">F360</span>
+                                <span class="text-[10px] font-extrabold uppercase bg-brand-magenta text-white px-2.5 py-1 rounded-full">Pieza #05</span>
+                            </div>
+                            <div class="w-full h-32 rounded-xl overflow-hidden bg-white dark:bg-slate-900 mb-3 border border-slate-200 dark:border-slate-700">
+                                <img src="./fusion_preview_5.png" alt="Pieza 5 Fusion" class="w-full h-full object-contain p-2" onerror="this.onerror=null; this.src='https://picsum.photos/400/250?random=f3605';">
+                            </div>
+                            <h4 class="font-display font-bold text-base text-slate-900 dark:text-white group-hover:text-brand-magenta transition-colors"></h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">Archivo: <code class="font-mono text-brand-magenta">pieza_5.f3d</code></p>
+                            <span class="inline-flex items-center text-xs font-extrabold text-brand-magenta">
+                                <i class="fa-solid fa-download mr-1.5"></i> Descargar modelo 3D
+                            </span>
+                        </a>
+
+                        <!-- Pieza Fusion 6 -->
+                        <a href="./pieza_6.f3d" download class="fusion-card group block bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-brand-blueSky p-5 shadow-sm">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="w-11 h-11 rounded-xl bg-orange-500 text-white font-display font-extrabold text-lg flex items-center justify-center shadow">F360</span>
+                                <span class="text-[10px] font-extrabold uppercase bg-brand-magenta text-white px-2.5 py-1 rounded-full">Pieza #06</span>
+                            </div>
+                            <div class="w-full h-32 rounded-xl overflow-hidden bg-white dark:bg-slate-900 mb-3 border border-slate-200 dark:border-slate-700">
+                                <img src="./fusion_preview_6.png" alt="Pieza 6 Fusion" class="w-full h-full object-contain p-2" onerror="this.onerror=null; this.src='https://picsum.photos/400/250?random=f3606';">
+                            </div>
+                            <h4 class="font-display font-bold text-base text-slate-900 dark:text-white group-hover:text-brand-magenta transition-colors"></h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">Archivo: <code class="font-mono text-brand-magenta">pieza_6.f3d</code></p>
+                            <span class="inline-flex items-center text-xs font-extrabold text-brand-magenta">
+                                <i class="fa-solid fa-download mr-1.5"></i> Descargar modelo 3D
+                            </span>
+                        </a>
+
+                    </div>
+
+                    <!-- Espacio de Texto Explicativo sobre las 6 piezas de Fusion 360 -->
+                    <div class="bg-brand-limeLight/40 dark:bg-slate-800/80 p-6 rounded-2xl border-2 border-brand-magenta">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <i class="fa-solid fa-cube text-brand-magenta"></i>
+                            <h4 class="font-display text-lg font-extrabold text-slate-900 dark:text-white">Proceso de prototipado </h4>
+                        </div>
+                        <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                            Teniendo los bocetos de las piezas en 3d pasamos a renderizadas con el tamaño final para cada una (4cm de ancho, de 1.75 a 2cm de alto y 3cm de profundidad). Para nuestro objeto decidimos que se uniera por medio de varillas de metal y para que estás queden más seguras que las perforaciones de cada pieza tengan un imán interno. Con esto definido pasamos a imprimir una prueba de las piezas para evaluar su diseño y funcionalidad.
+De esta prueba solo se ajusto el tamaño de las perforaciones a 0.7 CM de diámetro para encajar imanes y se pasó a imprimir el objeto final qué consta de la repetición de las 6 piezas 5 veces, obteniendo un total de 30 piezas.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- SUBSECCIÓN 2: CATEGORÍA SEMÁNTICA (CARRUSEL DIAGONAL 10)  -->
+            <!-- ========================================================= -->
+            <div id="boceto-sub-semantica" class="boceto-sub-content hidden space-y-6">
+                <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border-4 border-brand-yellowAccent shadow-md">
+                    <div class="flex items-center justify-between flex-wrap gap-2 mb-6">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-9 h-9 rounded-full bg-brand-yellowAccent text-slate-900 flex items-center justify-center font-extrabold font-display">2</span>
+                            <div>
+                                <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">Categoría Semántica</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Haz clic en cualquier lámina de la diagonal o usa las flechas para explorar las 10 piezas</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold text-brand-magenta bg-brand-pinkLight/30 px-3 py-1 rounded-full">
+                            10 Láminas · Vista Diagonal
+                        </span>
+                    </div>
+
+                    <!-- Contenedor del DiagonalCarousel -->
+                    <div id="semanticaDiagonalCarousel" class="diagonal-carousel-wrapper relative w-full h-[560px] bg-[#ececec] dark:bg-neutral-950 text-neutral-800 dark:text-neutral-100 rounded-3xl border-2 border-slate-300 dark:border-slate-800 overflow-hidden flex items-center justify-center select-none shadow-inner">
+                        
+                        <!-- Escena Diagonal -->
+                        <div class="diagonal-stage w-full h-full relative flex items-center justify-center"></div>
+
+                        <!-- Controles Anterior / Siguiente -->
+                        <button id="diagPrevBtn" aria-label="Anterior" class="absolute left-4 sm:left-8 bottom-6 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white/90 dark:bg-slate-800/90 text-brand-magenta border-2 border-brand-magenta shadow-lg flex items-center justify-center hover:bg-brand-magenta hover:text-white transition-all duration-300 cursor-pointer">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+
+                        <button id="diagNextBtn" aria-label="Siguiente" class="absolute right-4 sm:right-8 bottom-6 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white/90 dark:bg-slate-800/90 text-brand-magenta border-2 border-brand-magenta shadow-lg flex items-center justify-center hover:bg-brand-magenta hover:text-white transition-all duration-300 cursor-pointer">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+
+                        <!-- Indicador inferior -->
+                        <div id="diagCounter" class="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-extrabold text-brand-magenta border border-brand-magenta/30">
+                            3 / 10
+                        </div>
+                    </div>
+
+                    <!-- Caja de Texto Explicativo Semántico de la imagen seleccionada -->
+                    <div id="info-semantica" class="mt-6 bg-slate-50 dark:bg-slate-800/80 p-6 rounded-2xl border-2 border-brand-yellowAccent">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="diag-info-badge text-xs font-extrabold uppercase bg-brand-yellowAccent text-slate-900 px-3 py-1 rounded-full">opción Semántica #3</span>
+                            <span class="text-xs text-slate-400 font-semibold"></span>
+                        </div>
+                        <h4 class="diag-info-title font-display text-xl font-bold text-slate-900 dark:text-white mb-1">03. Signo y Significante</h4>
+                        <p class="diag-info-desc text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Explicación semántica detallada de la lámina activa.</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <!-- APARTADO 8: RESULTADO FINAL -->
+        <section id="tab-resultado" class="tab-content hidden space-y-10">
+            <div class="mb-8 border-b-2 border-brand-magenta pb-4">
+                <h2 class="font-display text-3xl font-extrabold text-slate-900 dark:text-white">Resultado Final</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Materialización definitiva del sistema modular y validación experimental en el aula</p>
+            </div>
+
+            <!-- BLOQUE SUPERIOR: 2 Imágenes Grandes + Cuadro de Texto al lado -->
+            <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border-4 border-brand-pinkLight shadow-md">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    
+                    <!-- Columna Izquierda (7 cols): Dos imágenes grandes -->
+                    <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="group relative h-[320px] sm:h-[380px] rounded-2xl overflow-hidden border-3 border-brand-magenta shadow-lg bg-slate-100 dark:bg-slate-800">
+                            <img src="./resultado_1.jpg" 
+                                 alt="Resultado Final Vista 1" 
+                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                 onerror="this.onerror=null; this.src='https://picsum.photos/600/800?random=res1';">
+                            <span class="absolute bottom-3 left-3 bg-brand-magenta text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full shadow">
+                                Conjunto de piezas #01
+                            </span>
+                        </div>
+
+                        <div class="group relative h-[320px] sm:h-[380px] rounded-2xl overflow-hidden border-3 border-brand-blueSky shadow-lg bg-slate-100 dark:bg-slate-800">
+                            <img src="./resultado_2.jpg" 
+                                 alt="Resultado Final Vista 2" 
+                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                 onerror="this.onerror=null; this.src='https://picsum.photos/600/800?random=res2';">
+                            <span class="absolute bottom-3 left-3 bg-brand-blueSky text-slate-900 text-[10px] font-extrabold uppercase px-3 py-1 rounded-full shadow">
+                                Empaque #02
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha (5 cols): Cuadro de texto explicativo -->
+                    <div class="lg:col-span-5 bg-slate-50 dark:bg-slate-800/80 p-6 rounded-2xl border-2 border-brand-magenta flex flex-col justify-center space-y-4">
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-brand-magenta bg-brand-pinkLight/40 px-3 py-1 rounded-full w-fit">
+                            Síntesis del Artefacto
+                        </span>
+                        <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">
+                           Miu Rengo
+                        </h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                           El artefacto consta de un conjunto de 6 piezas modulares azules plásticas en imanes internos de ensamblaje práctico e intuitivo de creatividad libre. El juego completo cuenta con 5 repeticiones del conjunto,  es decir 30 piezas y 25 varillas de unión para la construcción de figuras y estructuras.
+                        </p>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            El empaque es un maletín de () y dos asas para transportarlo cómo un maletín. Su inspiración está en la forma inicial de la composición 2 (el módulo reflejado verticalmente y superpuesto al anterior). Lo que queremos con este empaque es ofrecerle al usuario una experiencia completa del juego, la cual empieza desde que lo ven. Aquí se acerca a la geometría de las piezas y las puede ver  por una cara del empaque.
+                        </p>
+                        <div class="flex flex-wrap gap-2 pt-2">
+                            <span class="text-xs bg-brand-pinkLight text-slate-900 font-bold px-3 py-1 rounded-full">Prototipo final</span>
+                            <span class="text-xs bg-brand-limeLight text-slate-900 font-bold px-3 py-1 rounded-full">Empaque final</span>
+                            <span class="text-xs bg-brand-yellowAccent text-slate-900 font-bold px-3 py-1 rounded-full">Validación</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- BLOQUE INFERIOR: Exploración del artefacto en clase (Acordeón 11 imágenes + Texto debajo) -->
+            <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border-4 border-brand-blueSky shadow-md space-y-6">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <div class="flex items-center space-x-3">
+                        <span class="w-10 h-10 rounded-full bg-brand-blueSky text-slate-900 flex items-center justify-center font-extrabold font-display">
+                            <i class="fa-solid fa-people-group"></i>
+                        </span>
+                        <div>
+                            <h3 class="font-display text-2xl font-bold text-slate-900 dark:text-white">Exploración del artefacto en clase</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Desliza el cursor sobre los 11 paneles para desplegar cada momento de interacción y prueba</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-brand-magenta bg-brand-pinkLight/30 px-3 py-1 rounded-full">
+                         Registros Fotográficos
+                    </span>
+                </div>
+
+                <!-- Galería Acordeón de 11 imágenes (misma librería del Apartado 4) -->
+                <div class="accordion-gallery accordion-gallery--11">
+                    <div class="ag-panel ag-panel--active">
+                        <img src="./exploracion_1.jpg" alt="Exploración 1" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=exp1';">
+                        <span class="ag-label">01. Estructura con las 30 piezas</span>
+                    </div>
+                    <div class="ag-panel">
+                        <img src="./exploracion_2.jpg" alt="Exploración 2" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=exp2';">
+                        <span class="ag-label">02. vista 2 de estructutra</span>
+                    </div>
+                    <div class="ag-panel">
+                        <img src="./exploracion_3.jpg" alt="Exploración 3" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=exp3';">
+                        <span class="ag-label">03. vista 3 de estructutra</span>
+                    </div>
+                    <div class="ag-panel">
+                        <img src="./exploracion_4.jpg" alt="Exploración 4" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=exp4';">
+                        <span class="ag-label">04. cañon 1</span>
+                    </div>
+                    <div class="ag-panel">
+                        <img src="./exploracion_5.jpg" alt="Exploración 5" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=exp5';">
+                        <span class="ag-label">05. cañon 2</span>
+                    </div>
+                    <div class="ag-panel">
+                        <img src="./exploracion_6.jpg" alt="Exploración 6" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=exp6';">
+                        <span class="ag-label">06. avion</span>
+                    </div>
+                    <div class="ag-panel">
+                        <img src="./exploracion_7.jpg" alt="Exploración 7" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=exp7';">
+                        <span class="ag-label">07. rinoceronte</span>
+                    </div>
+                    <div class="ag-panel">
+                        <img src="./exploracion_8.jpg" alt="Exploración 8" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=exp8';">
+                        <span class="ag-label">08. trenl</span>
+                    </div>
+                    <div class="ag-panel">
+                        <img src="./exploracion_9.jpg" alt="Exploración 9" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=exp9';">
+                        <span class="ag-label">09. categoria semantica </span>
+                    </div>
+                    <div class="ag-panel">
+                        <img src="./exploracion_10.jpg" alt="Exploración 10" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=exp10';">
+                        <span class="ag-label">10. estructura</span>
+                    </div>
+                    <div class="ag-panel">
+                        <img src="./exploracion_11.jpg" alt="Exploración 11" onerror="this.onerror=null; this.src='https://picsum.photos/600/400?random=exp11';">
+                        <span class="ag-label">11. Integrantes</span>
+                    </div>
+                </div>
+
+                <!-- Cuadro de Texto Explicativo debajo de la galería de 11 imágenes -->
+                <div class="bg-brand-limeLight/40 dark:bg-slate-800/80 p-6 rounded-2xl border-2 border-brand-yellowAccent">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <i class="fa-solid fa-lightbulb text-brand-magenta"></i>
+                        <h4 class="font-display text-lg font-extrabold text-slate-900 dark:text-white">Observaciones de la Exploración en Aula y conclusiones</h4>
+                    </div>
+                    <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                        Durante la entrega en clase se exploró el proyecto de cada uno y se vieron los de nuestros compañeros.
+Hicimos una estructura con las 30 piezas de nuestro juguete, y otra estructura menor, luego hicimos opciones nuevas de categoría semántica y socializamos.
+Cómo conclusión del proyecto quedamos felices con el resultado, aprendimos y afianzamos más conceptos junto con principios de diseño aplicándolos a la construcción controlada de retículas y módulos, por otro lado también aprendimos de programación (la página está hecha con programación HTML, CSS y Javascript) mejoramos el diseño de piezas 3d en fusion 360, más diseñadores, productos y cosas de la naturaleza (esto en el apartado 5).
+Muchas gracias por su atención 💗
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- JavaScript Externo -->
+    <script src="./scripts.js"></script>
+</body>
+</html>
